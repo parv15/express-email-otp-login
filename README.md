@@ -2,7 +2,7 @@
   <img src="docs/banner.svg" alt="Passwordless login for Express with email codes and magic links, sent with Mailtrap" width="100%">
 </p>
 
-# Passwordless Login with Email OTP and Magic Link in Express (Mailtrap)
+# Passwordless Login with Email OTP and Magic Link in Express
 
 A secure passwordless login for Node.js apps: users enter their email and sign in with a 6-digit code or a magic link. Built with Express, TypeScript and SQLite, with hashed single-use codes, expiry, attempt limits and rate limiting, and login emails delivered through the Mailtrap Email API Transactional stream. Use it as a reference implementation or starter template for email OTP login, magic link login and passwordless authentication in Node.js. The same Mailtrap Email API also has a Bulk stream for marketing mail, which this repo doesn't use.
 
