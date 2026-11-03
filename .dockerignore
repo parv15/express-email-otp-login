@@ -1,0 +1,17 @@
+# Include only build inputs. Runtime copies only compiled code and production deps.
+*
+!Dockerfile
+!package.json
+!package-lock.json
+!tsconfig.json
+!tsconfig.build.json
+!LICENSE
+!src/
+!src/**
+
+**/node_modules/
+**/dist/
+**/data/
+**/.env
+**/.env.*
+**/.git/

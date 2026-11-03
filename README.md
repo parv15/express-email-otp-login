@@ -323,6 +323,48 @@ The limits live in code as named constants: `RATE_LIMITS` in [`src/auth/rateLimi
 
 `createApp` takes the database, mailer, clock and logger as arguments. That is what lets the tests run against an in-memory database, a fake mailer and a fake clock, with no Mailtrap account.
 
+## Run with Docker
+
+Docker Compose builds the TypeScript app and its native SQLite dependency, so
+you do not need Node.js or build tools installed locally:
+
+```bash
+cp .env.example .env
+# Set MAILTRAP_TOKEN, MAIL_FROM_EMAIL and a random OTP_SECRET in .env.
+docker compose up
+```
+
+Open **http://localhost:3000/login**. The app runs as a non-root user and the port
+is published only on the loopback interface. To generate `OTP_SECRET` using only
+Docker, run this before starting the app and paste the output into `.env`:
+
+```bash
+docker compose run --rm --build app node -e "console.log(require('node:crypto').randomBytes(48).toString('base64url'))"
+```
+
+With the default `AUTO_SIGNUP=false`, add a user from another terminal:
+
+```bash
+docker compose exec app node dist/cli/addUser.js you@example.com
+```
+
+This uses the compiled CLI; development tools such as `tsx` are not installed in
+the runtime image. The CLI and server use the same environment and database.
+
+The `data` volume mounts the entire `/app/data` directory, including `app.db`,
+`app.db-wal` and `app.db-shm` while SQLite uses them. Keep `DATABASE_PATH` under
+`./data/` (the default is `./data/app.db`) so all database files remain on that
+volume. `docker compose down` followed by `docker compose up` preserves users and
+sessions; `docker compose down --volumes` removes the database. After source or
+dependency changes, rebuild with `docker compose up --build`.
+
+Compose reads configuration and secrets from `.env`; they are not copied into
+the image. `APP_URL` must match the browser-visible address, including the port.
+Changing `PORT` changes both the app listener and its published port. For a real
+deployment, keep a single app instance and follow [Deploying to production](#deploying-to-production)
+for HTTPS and `TRUST_PROXY`. The existing process performs cleanup itself; there
+is no separate scheduler, worker or database service.
+
 ## Tests
 
 ```bash
