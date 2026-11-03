@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    init: true
+    env_file: .env
+    ports:
+      - "127.0.0.1:${PORT:-3000}:${PORT:-3000}"
+    volumes:
+      # Keep the database and SQLite's WAL/SHM sidecars on the same volume.
+      - data:/app/data
+
+volumes:
+  data:
